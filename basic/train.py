@@ -30,38 +30,36 @@ def load_upstridetype(upstride_type):
         from upstride.type2.tf.keras import layers
         return layers
     elif upstride_type == 3:
+        # FIXME type 3 missing aren't we including this as experimental?
         from upstride.type3.tf.keras import layers
         return layers
     else:
         raise ValueError(f"Upstride_type {upstride_type} not a valid type")
 
-
-# A simple AlexNet like architecture
 def simpleNet(input_size: List[int], factor: int, num_classes: int) -> tf.keras.Model:
+
     # import the respective upstride type layers
     layers = load_upstridetype(args['upstride_type'])
 
-    inputs = tf.keras.layers.Input(input_size)
-    # TF to UpStride
-    x = layers.TF2Upstride(strategy="basic")(inputs) # basic or " " 
-    # Layer 1
-    x = layers.Conv2D(128//factor, (3,3), 1, padding='same')(x)
-    x = layers.BatchNormalization()(x)
-    x = tf.keras.layers.Activation('relu')(x)
+    inputs = tf.keras.layers.Input(shape=input_size)
+    # TF to Upstride
+    x = layers.TF2Upstride()(inputs)
+
+    # Block 1
+    x = layers.Conv2D(32 // factor, (3, 3))(x)
+    x = layers.Activation('relu')(x)
     x = layers.MaxPooling2D((3,3), strides=(1,1))(x)
-    # Layer 2
-    x = layers.Conv2D(256//factor, (3,3), padding='same')(x)
-    x = layers.BatchNormalization()(x)
-    x = tf.keras.layers.Activation('relu')(x)
+
+    # Block 2
+    x = layers.Conv2D(64 // factor, (3, 3))(x)
+    x = layers.Activation('relu')(x)
     x = layers.MaxPooling2D((3,3), strides=(2,2))(x)
-    # Layer 3
-    x = layers.Conv2D(256//factor, (3,3), padding='same', activation='relu')(x)
-    x = layers.BatchNormalization()(x)
-    x = layers.MaxPooling2D((3,3), strides=(2,2))(x)
-    # Layer 4
-    x = tf.keras.layers.Flatten()(x)
-    x = layers.Dense(384//factor, activation="relu")(x)
-    # Layer 5
+
+    # Block 3
+    x = layers.Flatten()(x)
+    x = layers.Dense(128 // factor)(x)
+
+    # Logits
     x = layers.Dense(num_classes, use_bias=True)(x)
 
     # Upstride to TF

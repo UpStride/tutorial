@@ -1,13 +1,12 @@
 from typing import List
 
-import numpy as np
 import tensorflow as tf 
 
-from upstride.type2.tf.keras import layers
 import upstride_argparse as argparse
 
 arguments = [
-        [int, "factor", 4, 'division factor to scale the number of channel. factor=2 means the model will have half the number of channels compare to default implementation'],
+        [int, "upstride_type", 1, 'specify the upstride type', lambda x: x > 0 and x < 4],
+        [int, "factor", 2, 'division factor to scale the number of channels. factor=2 means the model will have half the number of channels compare to default implementation'],
         ['list[int]', "input_size", [32, 32, 3], 'processed shape of each image'],
         [int, 'batch_size', 16, 'The size of batch per gpu', lambda x: x > 0],
         [int, "num_classes", 10, 'Number of classes', lambda x: x > 0],
@@ -23,8 +22,25 @@ x_train, x_test = x_train / 255.0, x_test / 255.0
 # argparse utility returns python dict 
 args = argparse.parse_cmd(arguments)
 
+def load_upstridetype(upstride_type):
+    if upstride_type == 1:
+        from upstride.type1.tf.keras import layers
+        return layers
+    elif upstride_type == 2:
+        from upstride.type2.tf.keras import layers
+        return layers
+    elif upstride_type == 3:
+        from upstride.type3.tf.keras import layers
+        return layers
+    else:
+        raise ValueError(f"Upstride_type {upstride_type} not a valid type")
+
+
 # A simple AlexNet like architecture
 def simpleNet(input_size: List[int], factor: int, num_classes: int) -> tf.keras.Model:
+    # import the respective upstride type layers
+    layers = load_upstridetype(args['upstride_type'])
+
     inputs = tf.keras.layers.Input(input_size)
     # TF to UpStride
     x = layers.TF2Upstride(strategy="basic")(inputs) # basic or " " 

@@ -39,6 +39,8 @@ This code has been developped starting from the Tensorflow tutorial provided in 
 
 ## Usage <a name="usage"></a>
 
+Before starting, please make sure to follow the instructions at the root of this repository to set up everything you need to run this example.
+
 ### Train and evaluate <a name="train"></a>
 
 To train and evaluate your transformer, run: 

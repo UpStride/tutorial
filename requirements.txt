@@ -1,6 +1,6 @@
-tensorflow-gpu==2.5.0rc0
+tensorflow-gpu==2.4.1
 tensorflow-datasets==4.2.0
-tensorflow-text==2.5.0
+tensorflow-text==2.4.3
 tabulate==0.8.9
 nltk==3.6.1
 upstride-argparse==1.0.0

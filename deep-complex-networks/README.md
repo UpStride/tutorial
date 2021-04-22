@@ -3,43 +3,44 @@
 Deep Complex Networks (DCN) provides a simple codebase that showcases the implementation of Deep Complex Networks using Tensorflow and python engine and train and evaluate on CIFAR datasets.
 
 ## Table of Contents
-
-  - [Description <a name="description"></a>](#description-)
-  - [Supported tasks/datasets <a name="tasks"></a>](#supported-tasksdatasets-)
-  - [Supported network architectures <a name="architectures"></a>](#supported-network-architectures-)
+- [Deep Complex Networks](#deep-complex-networks)
+  - [Table of Contents](#table-of-contents)
+  - [Description](#description)
+  - [Pre-requisites](#pre-requisites)
+  - [Supported tasks/datasets](#supported-tasksdatasets)
+  - [Supported network architectures](#supported-network-architectures)
   - [DCN Report](#dcn-report)
-  - [Usage <a name="usage"></a>](#usage-)
-    - [Train and evaluate <a name="train"></a>](#train-and-evaluate-)
-    - [caveats:](#caveats)
-  - [How to modify the code](#how-to-modify-the-code)
-  - [References <a name="references"></a>](#references-)
+  - [Usage](#usage)
+    - [Train and evaluate](#train-and-evaluate)
+    - [How to modify the code](#how-to-modify-the-code)
+  - [References](#references)
 
-## Description <a name="description"></a> 
+## Description 
 
-Our implementation is based on the work of Trabelsi et al., which we highly recommend reading before moving forward with this example. For the sake of convenience, here are the main point to keep in mind:
-* By using Complex BatchNormalization the variance between the real and imaginary parts are equivalent and distribution is gauranteed to be circular.
-* A Initialization technique that ensures real and imaginary parts to be independently initialized.
-* Learning the imaginary components from the data using real valued resnet block.
-* Complex Convolution which in our implementation referred to as type 1.
+Our implementation is based on the work of Trabelsi et al., which we highly recommend reading before moving forward with this example. 
 
-The example will focus only on image recogition. 
+We have conducted experiments that validate our implementation with Trabelsi et al [github][3]. Our implementation includes Complex BatchNormalization, Complex and independent initialization, Complex Convolution and learning the imaginary parts using a small resnet block.
 
-The entire codebase can be found here -> [link][1]
+The example will focus only on image classification task on CIFAR10 and CIFAR100 using the  Wide-Shallow architecture. 
 
-## Supported tasks/datasets <a name="tasks"></a>
+## Pre-requisites
 
-* [CIFAR10 or CIFAR100][2] datasets
+Please follow the instructions from classification-api [github][1] repository and setup the codebase. 
 
-## Supported network architectures <a name="architectures"></a>
+## Supported tasks/datasets
 
-3 types of architectures are supported. Each one has trade-off between model width and depth while fixing the overall parameter (~ 1.7 M parameters). 
+* Image classification on [CIFAR10 or CIFAR100][2] datasets
 
-__Wide-Shallow__: Models use __lesser__ residual blocks and __more__ convolutional filters per layer.
+## Supported network architectures
+
+We support all 3 network architectures from Trabelsi et al. Each one has trade-off between model width and depth while fixing the overall parameter (~ 1.7 M parameters). 
+
+__Wide-Shallow__: Models use __less__ residual blocks and __more__ convolutional filters per layer.
 
 * WSComplexNetTF
 * WSComplexNetUpStride
 
-__Deep-Narrow__: Models use __more__ residual blocks and __lesser__ convolutional filters per layer.
+__Deep-Narrow__: Models use __more__ residual blocks and __less__ convolutional filters per layer.
 
 * DNComplexNetTF
 * DNComplexNetUpStride
@@ -53,11 +54,27 @@ __In-Between__: Models use a good compromise between Wide-Shallow and Deep-Narro
 
 Our experiments to validate DCN can be found [here](.report-dcn.pdf). It's recommended to read the report on the experimental setup and processes used in our validation.
 
-## Usage <a name="usage"></a>
+The DCN paper source code is available in this [github][3] repository.
 
-Before starting, please make sure to follow the instructions at the root of this repository to set up everything you need to run this example.
+__Caveats__:
 
-### Train and evaluate <a name="train"></a>
+Our python engine and classification-api has evolved at lot since the creation of the report, hence there are couple of differences between the experimental setup from the report compared to the example defined in the next section. 
+
+1. The training configuration example provided below utilizes the full training set for training the model and evaluation performed on the test set, which is not the standard practise. 
+2. The are differences in the current python engine compared to the version used in our DCN experiments. 
+
+class: `TF2UpstrideLearned`
+* kernel_size = `3` instead of `1` 
+* kernel_initializer=`'he_normal'` instead of `'glorot_uniform'` (tensorflow default)
+* kernel_regularizer= `l2(0.0005)` instead of `None`
+
+The above class can be found in `upstride_python/upstride/generic_layers.py` of the python engine repository.
+
+## Usage
+
+Please make sure to follow the instructions at the root of this repository to set up everything you need to run this example.
+
+### Train and evaluate
 
 __Training and evalutation on CIFAR10__:
 
@@ -126,22 +143,10 @@ __Training and evaluation on CIFAR100__:
 
 The only change required in the above configuration is `--dataloader.name cifar100` and `--model.num_classes 100` 
 
-### caveats
 
-1. The above configuration doesn't truely reflect the train split used in our DCN experiments. In the above example we have used the full training set and test set as validation set which is not the standard practise. 
-2. The below settings are different in the current python engine compared to the version used in our DCN experiments. 
-   Note: Our experiments for reproducing DCN with Tensorflow matched the same configurations from [github][3] repository from Trabelsi et al.
+### How to modify the code
 
-class: `TF2UpstrideLearned`
-* kernel_size = `3` instead of `1` 
-* kernel_initializer=`'he_normal'` instead of `'glorot_uniform'` (tensorflow default)
-* kernel_regularizer= `l2(0.0005)` instead of `None`
-
-The above class can be found in `upstride_python/upstride/generic_layers.py` of the python engine repository.
-
-## How to modify the code
-
-All our models from the present in `/classification-api/src/models/` directory.
+All our models are availale in `/classification-api/src/models/` directory.
 
 In order to add custom models. We only require to subclass `GenericModelBuilder` and override the `model` function.
 
@@ -168,7 +173,7 @@ class AnExampleNetwork(GenericModelBuilder)
     # user specific layers 
     self.layer.Conv2D(64 // self.factor)(x)
 
-    # can force tf.keras.layers.xxx if required. 
+    # its possible to switch intermediate layers from hypercomplex to real and vice versa. refer to change_framework_if_necessary function. 
     # ...
     # ... 
     
@@ -202,9 +207,9 @@ Now in order to start the training we only need to replace the `--model.name exa
 
 It's recommended the user goes through the `generic_model.py` in detail on how to use other keyword arguments.
 
-In `train.py` file at the root of the `classification_api` folder there are namespaces for arguments which would be useful to understand the defaults and also add additional parameters if necessary.
+In `train.py` file at the root of the `classification_api` folder, there are namespaces for arguments which would be useful in understanding the default values.
 
-## References <a name="references"></a>
+## References
 
 1. Chiheb Trabelsi, Olexa Bilaniuk, Ying Zhang, Dmitriy Serdyuk, Sandeep Subramanian, João Felipe Santos, Soroush Mehri, Negar Rostamzadeh, Yoshua Bengio, Christopher J Pal. “Deep Complex Networks”. In Internation Conference on Learning Representations (ICLR), 2018
 

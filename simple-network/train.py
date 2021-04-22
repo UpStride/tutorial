@@ -5,7 +5,7 @@ import tensorflow as tf
 import upstride_argparse as argparse
 
 arguments = [
-        [int, "upstride_type", 1, 'specify the upstride type', lambda x: x > 0 and x < 4],
+        [int, "upstride_type", 1, 'specify the upstride type', lambda x: x > 0 and x < 3],
         [int, "factor", 2, 'division factor to scale the number of channels. factor=2 means the model will have half the number of channels compare to default implementation'],
         ['list[int]', "input_size", [32, 32, 3], 'processed shape of each image'],
         [int, 'batch_size', 16, 'The size of batch per gpu', lambda x: x > 0],
@@ -28,10 +28,6 @@ def load_upstridetype(upstride_type):
         return layers
     elif upstride_type == 2:
         from upstride.type2.tf.keras import layers
-        return layers
-    elif upstride_type == 3:
-        # FIXME type 3 missing aren't we including this as experimental?
-        from upstride.type3.tf.keras import layers
         return layers
     else:
         raise ValueError(f"Upstride_type {upstride_type} not a valid type")

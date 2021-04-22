@@ -8,12 +8,16 @@ This repository contains examples and step by step guide on:
 
 There are 2 ways to setup the environment. 
 
-__Method 1__
+__Method 1__ 
 
 > pip install -r requirements.txt
 
 
 If you have access to the upstride_python repository then you would need to append the `PYTHONPATH="local_path_where_the_upstride_python_repo" python train.py` before invoking the python script. This is required so that you can import upstride modules without import errors. 
+
+or 
+
+you could perform `pip install -e .` from the root of the upstride_python directory which would install the python engine in the users' python environment. This way any changes made to the upstride_python directory can be quickly tested or validated.  
 
 Only Python 3.6 or later is supported.
 
@@ -45,6 +49,6 @@ If the user wishes to use a specific dataset, Ensure to mount them via `-v local
 
 ## Usage
 
-For basic example: [README.md](./basic/README.md)
-For DCN(Deep Complex Networks) example: [README.md](./deep-complex-networks/README.md)
-For Quaternion Transformers example: [README.md](./quaternion-transformers/README.md)
+* For basic example: [README.md](./basic/README.md)
+* For DCN(Deep Complex Networks) example: [README.md](./deep-complex-networks/README.md)
+* For Quaternion Transformers example: [README.md](./quaternion-transformers/README.md)

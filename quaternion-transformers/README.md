@@ -55,6 +55,8 @@ As an alternative to directly modifying the argument files, it's possible to ove
 
 Example: `python train_and_eval.py @arguments/args_translation.txt --type real --num_heads 1`
 
+For a description of all the available arguments, run `python train_and_eval.py -h` .
+
 ### Compute the BLEU score <a name="bleu"></a>
 
 The most common metric to evaluate the performance of neural machine translation models is to use the [BLEU](https://en.wikipedia.org/wiki/BLEU) score. After completing the training of your transformer for machine translation, run:

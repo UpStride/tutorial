@@ -1,11 +1,16 @@
 # Introduction
 
 - [Introduction](#introduction)
+    - [Description](#description)
     - [Pre-requisites](#pre-requisites)
     - [Example](#example)
     - [How to use UpStride](#how-to-use-upstride)
         - [TF2Upstride](#tf2upstride)
         - [Upstride2TF](#upstride2tf)
+
+### Description
+
+We would provide an example on how to train a simple neural network using upstride type 1 and show how easy it is to modify and use upstride layers. We will be using CIFAR10 dataset in our example below.
 
 ### Pre-requisites 
 
@@ -13,7 +18,7 @@ User should have installed the necessary dependencies mentioned in the [README.m
 
 ### Example
 
-Lets look at the `train.py` file. Most of the code is standard tensorflow/keras format.
+Lets look at the `train.py` file. Most of the code is standard tensorflow/keras format. We will take a deeper look at the network itself in the next section.
 
 These are the arguments which are required to train a `simpleNet` architecture. All these have default values. 
 
@@ -48,6 +53,8 @@ optional arguments:
   --lr [LR]             initial learning rate [default: 0.001]
 ```
 
+You can easily pass the arguments for `upstride_type` as 1 or 2 or 3 to launch the training for specific type.  
+
 ### How to use UpStride
 
 UpStride engine provides layers that transforms real valued tensor into the following representations.
@@ -76,7 +83,6 @@ the neural network the same way you do with Keras. At the end of the neural netw
 
 For training and inference, all TensorFlow tools can be used (distribute strategies, mixed-precision training...)
 
-Only Python 3.6 or later is supported.
 
 In the below example, we have a simple network architecture.
 
@@ -118,29 +124,43 @@ def simpleNet(input_size: List[int], factor: int, num_classes: int) -> tf.keras.
     return model
 ```
 
-The simplest way to adapt your own code is described above: you only need to call the UpStride layers instead of regular TensorFlow. It allows the user to readily benefit from our Engine. This is the "vanilla" way of using UpStride.
+The only elements we need to convert an existing architecture is to:
 
-However, due to the way the python engine is implemented, the vanilla approach results in a model that contains more free parameters than its pure TensorFlow counterpart. 
+* add TF2Upstride after the network input.
+* scale the channels for the linear layers by the factor value. This is optional. 
+* add UpStride2TF before final logits layer.
 
-The `factor` is passed to reduce the number of channels at each given block. This ensures the number of free paramters are comparable with real valued networks. 
+The `factor` scales the number of channels for all the linear layers when applied. This helps in controlling the capacity of the overall network.
 
-* type 1 - factor 2
-* type 2 - factor 4
-* type 3 - factor 8
+However, due to the way the python engine is implemented, the vanilla approach (without using the `factor`) results in a model that contains more free parameters than its pure TensorFlow counterpart. 
+
+The `factor` can be derived depending on the upstride type used. Typically we use $2^k$, where $k \in \lbrace1, 2, 3\rbrace$. 
+
+Its not mandatory to follow the above convention, the factor can be any meaningful `int` value. Ensure the value is not too small enough to hinder the learning capability of the network. 
+
+For example, 
+
+```python 
+x = layers.Conv2D(32 // factor, (3, 3))(x)
+```
+
+`factor = 2` will reduce the number of channels to 16, for `factor = 4` the number of channels will become 8 and for `factor = 8` the channels will become 4.
+
+
 
 ##### TF2Upstride
 
 Several strategies are available to convert TensorFlow tensors to Upstride tensors.
 
-`basic` or ` `: imaginary components are initialized with zeros.
+`default` or `basic` or ` ` : imaginary components are initialized with zeros.
 
 ```python
-x = layers.TF2Upstride()(inputs)
+x = layers.TF2Upstride(strategy="default")(inputs)
 ```
 `learned`: a small neural network (ResNet blocks) (2 convolutions with 3x3 kernel and 3 channels) is used to learn the imaginary components.
 
 ```python
-x = layers.TF2Upstride(strategy='learned')(inputs)
+x = layers.TF2Upstride(strategy="learned")(inputs)
 ```
 
 ##### Upstride2TF

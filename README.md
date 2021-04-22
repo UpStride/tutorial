@@ -15,6 +15,8 @@ __Method 1__
 
 If you have access to the upstride_python repository then you would need to append the `PYTHONPATH="local_path_where_the_upstride_python_repo" python train.py` before invoking the python script. This is required so that you can import upstride modules without import errors. 
 
+Only Python 3.6 or later is supported.
+
 __Method 2__
 
 use dockerfile to build and run the image without installing the dependencies on the local system. 

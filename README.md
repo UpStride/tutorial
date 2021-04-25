@@ -1,25 +1,28 @@
 # Tutorials
 
-This repository contains examples and step by step guide on:
-* How to use UpStride Engine
-* Examples on how to adapt the code to your project
+This repository contains three tutorials that use the upstride engine. 
+* *Simple network*: this is a basic example on how to train a simple convolutional neural network (CNN) using the upstride engine. We also provide guidance on how to easily convert your own neural networks (NNs) from real to hyper-complex using the upstride layers.
+* *Deep complex networks*: this tutorial shows how to reproduce the seminal paper of Trabelsi et al., called "Deep Complex Networks" (DCN), using the upstride engine and [upstride's classificatio API](https://github.com/UpStride/classification-api).
+* *Quaternion transformers*: This tutorail provides a simple codebase that showcases how to implement and use a quaternion-valued transformer networks for the popular tasks of sentiment analysis and neural machine translation.
+
+## Pre-requisites
+
+All the tutorials in this repository require Python 3.6 or later.
 
 ## Installation 
 
-There are 2 ways to setup the environment. 
+Before diving into the examples, let's set up the environment! 
+
+If you wish to install the required packages directly on you machine, follow *method 1*. If instead you wish to work in a docker container, use *method 2*.
 
 __Method 1__ 
 
 > pip install -r requirements.txt
 
 
-If you have access to the upstride_python repository then you would need to append the `PYTHONPATH="local_path_where_the_upstride_python_repo" python train.py` before invoking the python script. This is required so that you can import upstride modules without import errors. 
+If you have access to the upstride_python repository then you would need to append the `PYTHONPATH="local_path_where_the_upstride_python_repo" python train.py` before invoking the python script. This is required so that you can correctly import upstride modules. 
 
-or 
-
-you could perform `pip install -e .` from the root of the upstride_python directory which would install the python engine in the users' python environment. This way any changes made to the upstride_python directory can be quickly tested or validated.  
-
-Only Python 3.6 or later is supported.
+Alternatively, you could perform `pip install -e .` from the root of the upstride_python directory which would install the python engine in the users' python environment. This way any changes made to the upstride_python directory can be quickly tested or validated.
 
 __Method 2__
 
@@ -28,7 +31,7 @@ use dockerfile to build and run the image without installing the dependencies on
 __Build the docker file__
 
 Let's prepare the environment by building the docker file. 
-The `dockerifle` contains the UpStride python engine and required dependencies to be installed.
+The `dockerfile` contains the UpStride python engine and required dependencies to be installed.
 
 We use the `makefile` to build and run the dockers
 
@@ -49,6 +52,4 @@ If the user wishes to use a specific dataset, Ensure to mount them via `-v local
 
 ## Usage
 
-* For basic example: [README.md](./basic/README.md)
-* For DCN(Deep Complex Networks) example: [README.md](./deep-complex-networks/README.md)
-* For Quaternion Transformers example: [README.md](./quaternion-transformers/README.md)
+To get started with the a tutorial, please refer to the instructions in the corresponding folder.

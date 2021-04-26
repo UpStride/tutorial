@@ -1,6 +1,6 @@
 # Deep Complex Networks
 
-Deep Complex Networks (DCN) provides a simple codebase that showcases the implementation of Deep Complex Networks using Tensorflow and python engine and train and evaluate on CIFAR datasets.
+This tutorial shows how to reproduce the seminal paper of Trabelsi et al. [1], called "Deep Complex Networks" (DCN), using the upstride engine and [upstride's classificatio API][1].
 
 ## Table of Contents
 - [Deep Complex Networks](#deep-complex-networks)
@@ -17,7 +17,7 @@ Deep Complex Networks (DCN) provides a simple codebase that showcases the implem
 
 ## Description 
 
-Our implementation is based on the work of Trabelsi et al., which we highly recommend reading before moving forward with this example. 
+Our implementation is based on the work of Trabelsi et al., which we highly recommend reading before moving forward with this tutorial. 
 
 We have conducted experiments that validate our implementation with Trabelsi et al [github][3]. Our implementation includes Complex BatchNormalization, Complex and independent initialization, Complex Convolution and learning the imaginary parts using a small resnet block.
 
@@ -80,7 +80,7 @@ __Training and evalutation on CIFAR10__:
 
 Below is the training configuration for `WSComplexNetUpstride` on CIFAR10 dataset.
 
-```python
+```bash
 python train.py \
 --model.name WSComplexNetUpStride \
 --model.upstride_type 1 \

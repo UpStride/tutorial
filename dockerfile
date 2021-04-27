@@ -1,5 +1,4 @@
-From tensorflow/tensorflow:2.4.1-gpu
-# TODO replace the above with the updated python engine
+FROM tensorflow/tensorflow:2.4.1-gpu
 
 RUN apt-get update && \
     pip install --upgrade pip && \

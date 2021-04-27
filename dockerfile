@@ -1,4 +1,4 @@
-FROM eu.gcr.io/fluid-door-230710/upstride:py-2.0.0a2-tf2.4.0-gpu
+From tensorflow/tensorflow:2.4.1-gpu
 # TODO replace the above with the updated python engine
 
 RUN apt-get update && \
@@ -10,6 +10,6 @@ RUN apt-get update && \
     nltk==3.6.1 \
     pyyaml \
     upstride_argparse && \
-    rm -rf /var/lib/apt/lists/* 
+    rm -rf /var/lib/apt/lists/*
 
 WORKDIR /opt

@@ -1,11 +1,11 @@
 from typing import List
 
-import tensorflow as tf 
+import tensorflow as tf
 
 import upstride_argparse as argparse
 
 arguments = [
-        [int, "upstride_type", 1, 'specify the upstride type', lambda x: x > 0 and x < 3],
+        [int, "upstride_type", 1, 'specify the upstride type', lambda x: x >= 0 and x < 3],
         [int, "factor", 2, 'division factor to scale the number of channels. factor=2 means the model will have half the number of channels compare to default implementation'],
         ['list[int]', "input_size", [32, 32, 3], 'processed shape of each image'],
         [int, 'batch_size', 16, 'The size of batch per gpu', lambda x: x > 0],
@@ -14,16 +14,19 @@ arguments = [
         [float, "lr", 0.001, 'initial learning rate', lambda x: x > 0],
     ]
 
-# argparse utility returns python dict 
+# argparse utility returns python dict
 args = argparse.parse_cmd(arguments)
 
 # download CIFAR10 dataset
 (x_train, y_train),(x_test, y_test) = tf.keras.datasets.cifar10.load_data()
 # normalize the x_train and x_test
-x_train, x_test = x_train / 255.0, x_test / 255.0 
+x_train, x_test = x_train / 255.0, x_test / 255.0
 
 def load_upstridetype(upstride_type):
-    if upstride_type == 1:
+    if upstride_type == 0:
+        from upstride.type0.tf.keras import layers
+        return layers
+    elif upstride_type == 1:
         from upstride.type1.tf.keras import layers
         return layers
     elif upstride_type == 2:
@@ -77,12 +80,12 @@ for gpu in gpus:
 # Build the model
 model = simpleNet(args['input_size'], args['factor'], args['num_classes'])
 
-# Complie the model 
+# Complie the model
 model.compile(optimizer=tf.keras.optimizers.Adam(learning_rate=args['lr']),
-                loss='sparse_categorical_crossentropy', 
+                loss='sparse_categorical_crossentropy',
                 metrics=['accuracy'])
 
-# Training 
+# Training
 model.fit(x_train,y_train,
           batch_size=args['batch_size'],
           epochs=args['num_epochs'],

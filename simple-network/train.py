@@ -14,13 +14,13 @@ arguments = [
         [float, "lr", 0.001, 'initial learning rate', lambda x: x > 0],
     ]
 
+# argparse utility returns python dict 
+args = argparse.parse_cmd(arguments)
+
 # download CIFAR10 dataset
 (x_train, y_train),(x_test, y_test) = tf.keras.datasets.cifar10.load_data()
 # normalize the x_train and x_test
 x_train, x_test = x_train / 255.0, x_test / 255.0 
-
-# argparse utility returns python dict 
-args = argparse.parse_cmd(arguments)
 
 def load_upstridetype(upstride_type):
     if upstride_type == 1:
@@ -68,6 +68,11 @@ def simpleNet(input_size: List[int], factor: int, num_classes: int) -> tf.keras.
     model.summary()
 
     return model
+
+gpus = tf.config.experimental.list_physical_devices('GPU')
+# Allocate gpu memory when required.
+for gpu in gpus:
+    tf.config.experimental.set_memory_growth(gpu, True)
 
 # Build the model
 model = simpleNet(args['input_size'], args['factor'], args['num_classes'])

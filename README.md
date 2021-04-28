@@ -10,9 +10,12 @@ This repository contains three tutorials that use the upstride engine.
 
 - System: Linux (preferably Ubuntu)
 - Python version: 3.6 or later
+- Nvidia GPU preferable for fast training (and Nvidia libraries compatible with TensorFlow 2.4)
+
+If docker is to be used:
+
 - [Docker](https://docs.docker.com/engine/install/)
-- Nvidia GPU is preferable for fast training
-- [NVIDIA-container-runtime](https://nvidia.github.io/nvidia-container-runtime/)
+- [NVIDIA-container-runtime](https://nvidia.github.io/nvidia-container-runtime/), with a [useful source on installation steps](https://github.com/NVIDIA/nvidia-docker/issues/1243#issuecomment-694981577)
 
 ## Installation
 
@@ -37,6 +40,7 @@ Use dockerfile to build and run the image without installing the dependencies on
 Let's prepare the environment by building the docker. We use the `makefile` to build and run the dockers
 
 From the root of this directory type in the shell:
+
 > make build
 
 You would see the initial docker image being pulled from registry and dependencies being installed to construct a new docker image.
@@ -44,6 +48,7 @@ You would see the initial docker image being pulled from registry and dependenci
 #### Launch the docker
 
 From the shell run the below command:
+
 > make run
 
 The docker would be launched and you should see the docker terminal in the same window. Note: You will be logged in as root.
@@ -52,7 +57,7 @@ The docker would be launched and you should see the docker terminal in the same 
 
 This section serves as an introduction to docker manipulation, especially if some changes have to be introduced.
 
-`dockerfile` is the file that contains the configuration of the docker, with the required dependencies to install. We include the same packages as in `requirements.txt`, which are necessary to run the simple-network and quaternion-transofmers examples (there are some further requirements for the deep-complex-networks example, handled in the classification-api repository)
+`dockerfile` is the file that contains the configuration of the docker, with the required dependencies to install. We include the same packages as in `requirements.txt`, which are necessary to run the simple-network and quaternion-transofmers examples. Note: there are some further requirements for the deep-complex-networks example, handled in the classification-api repository.
 
 In the `build` command we construct the docker image from `dockerfile` and tag it as `upstride/tutorials:1.0`.
 
@@ -60,8 +65,8 @@ Here is the `run` command from the makefile:
 
 ```make
 run:
-	@docker run -it --rm --gpus all \
-	-v $$(pwd):/opt \
+    @docker run -it --rm --gpus all \
+    -v $$(pwd):/opt \
     upstride/tutorials:1.0
 ```
 
@@ -80,6 +85,7 @@ Other useful flags:
 After a docker container that was invoked without the `--rm` flag is turned off, it can be revived using:
 
 > docker start <docker container id / name>
+
 > docker attach <docker container id / name>
 
 Running dockers (with their ids and names) can be checked using:
@@ -89,6 +95,10 @@ Running dockers (with their ids and names) can be checked using:
 To check all the docker containers in the system run:
 
 > docker ps -a
+
+Further terminal sessions can be attached to a running docker container using:
+
+> docker exec -it <docker container id / name> bash
 
 Refer to the [docker documentation](https://docs.docker.com/engine/reference/commandline/run/#options) for further information.
 

@@ -98,11 +98,11 @@ To run the tutorials, it's necessary to clone the upstride engine.
 
 If dockers are to be used, we recommend cloning the engine into this tutorials directory - this way the makefile will not have to be altered in order to include the engine code in the docker container. Alternatively, the engine code located under a different local path can be mounted in the docker using the `-v` argument in the `makefile`. Note: for the deep-complex-network example, the same applies to  classification-api code: it needs to either be cloned into this directory or mounted using the `-v` argument.
 
-To use the engine `PYTHONPATH=<local_path_with_upstride_engine>` needs to be appended before running the training scripts, e.g. `PYTHONPATH=/opt/upstride_engine python train.py`. This is required so that you can correctly import upstride modules.
+To use the engine `PYTHONPATH=<local_path_to_upstride_engine>` needs to be appended before running the training scripts, e.g. `PYTHONPATH=/opt/upstride_engine python train.py`. This is required so that you can correctly import upstride modules.
 
-Note: You can also set the `PYTHONPATH` to the <local_path_with_upstride_engine> by typing the below in terminal:
+Note: You can also set the `PYTHONPATH` to the <local_path_to_upstride_engine> by typing the below in terminal:
 ```bash
-export PYTHONPATH="local_path_where_the_upstride_python_repo"
+export PYTHONPATH=<local_path_to_upstride_engine>
 ```
 you only need to do this once per terminal session.
 

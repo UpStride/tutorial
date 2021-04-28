@@ -1,6 +1,6 @@
 # Deep Complex Networks
 
-This tutorial shows how to reproduce the seminal paper of Trabelsi et al. [1], called "Deep Complex Networks" (DCN), using the upstride engine and [upstride's classificatio API][1].
+This tutorial shows how to reproduce the seminal paper of Trabelsi et al. [1], called "Deep Complex Networks" (DCN), using the upstride engine and [upstride's classification API][1].
 
 ## Table of Contents
 - [Deep Complex Networks](#deep-complex-networks)
@@ -17,7 +17,7 @@ This tutorial shows how to reproduce the seminal paper of Trabelsi et al. [1], c
 
 ## Description 
 
-Our implementation is based on the work of Trabelsi et al., which we highly recommend reading before moving forward with this tutorial. 
+Our implementation is based on the work of Trabelsi et al. [1], which we highly recommend reading before moving forward with this tutorial. 
 
 We have conducted experiments that validate our implementation with Trabelsi et al [github][3]. Our implementation includes Complex BatchNormalization, Complex and independent initialization, Complex Convolution and learning the imaginary parts using a small resnet block.
 
@@ -58,17 +58,17 @@ The DCN paper source code is available in this [github][3] repository.
 
 __Caveats__:
 
-Our python engine and classification-api has evolved at lot since the creation of the report, hence there are couple of differences between the experimental setup from the report compared to the example defined in the next section. 
+Our Upstride engine and classification-api have evolved at lot since the creation of the report, hence there are couple of differences between the experimental setup from the report compared to the example defined in the next section. 
 
-1. The training configuration example provided below utilizes the full training set for training the model and evaluation performed on the test set, which is not the standard practise. 
-2. The are differences in the current python engine compared to the version used in our DCN experiments. 
+1. The training configuration example provided below utilizes the full training set for training the model and evaluation performed on the test set, which is not the standard practice. 
+2. The are differences in the current Upstride engine compared to the version used in our DCN experiments. 
 
 class: `TF2UpstrideLearned`
 * kernel_size = `3` instead of `1` 
-* kernel_initializer=`'he_normal'` instead of `'glorot_uniform'` (tensorflow default)
-* kernel_regularizer= `l2(0.0005)` instead of `None`
+* kernel_initializer=`'he_normal'` instead of TensorFlow's default `'glorot_uniform'`
+* kernel_regularizer = `l2(0.0005)` instead of `None`
 
-The above class can be found in `upstride_python/upstride/generic_layers.py` of the python engine repository.
+The above class can be found in `upstride/generic_layers.py` of the Upstride engine repository.
 
 ## Usage
 
@@ -117,15 +117,15 @@ python train.py \
 ```
 
 * `--model.name` is the name of the  model.
-* `--model.upstride_type` to run the model for which upstride type.
+* `--model.upstride_type` to set the Upstride data type to be used in the model.
 * `--checkpoint_dir` and `--log_dir` are for storing the checkpoints and the tensorboard logs.
 * `--model.input_size` input shape of the image to the model.
-* `--model.changing_ids` these are indicators to automatically convert TF2Upstride and Upstride2TF. `beginning` adds the multivector component and  `end_before_dense`  converts back to real values before the logits layer.
-* `--model.num_classes` number of classes present in the dataset in this case 10 classes.
-* `--model.channels_first` If the user wishes to use the engine as channels first then this flag should be set `true`. Note: we would still pass input shape as (H, W, C) to the model. A Lambda layer is added in between Keras Input and TF2Upstride which would transpose the image to channels first.
-* `--dataloader.name` This should `cifar10` or `cifar100`.
-* `--dataloader.train_list` These are set of data augmentation that would be applied during training.
-* `--dataloader.validation_list` These are set of preprocessing that would be applied during validation.
+* `--model.changing_ids` are indicators to automatically convert TF2Upstride and Upstride2TF. `beginning` adds the multivector component and  `end_before_dense` converts back to real values before the logits layer.
+* `--model.num_classes` number of classes present in the dataset; in this case 10 classes.
+* `--model.channels_first` If the user wishes to use the `data_format` as `channels_first` then this flag should be set `True`. Note: we would still pass input shape as `(H, W, C)` to the model. A Lambda layer is automatically added in between Keras Input and TF2Upstride to transpose the image to `channels_first`.
+* `--dataloader.name` This should be either `cifar10` or `cifar100`.
+* `--dataloader.train_list` These are the set of data augmentation techniques to be applied during training.
+* `--dataloader.validation_list` These are set of preprocessing to be applied during validation.
 * `--dataloader.Normalize` normalizes the image and subtracts the mean from R, G, B values as specified in the arguments.
 * `--dataloader.Translate` adds Random shifts in height and width during preprocessing.
 * `--early_stopping` stops the training if the validation accuracy doesn't improve after the value provided. 
@@ -137,7 +137,7 @@ python train.py \
 * `--optimizer.clipnorm` clips the gradient norm which are above 1.0
 * `--optimizer.weight_decay` This is actually the L2 weight decay applied on the kernel_regularizer for the linear layers and not decay of the optimizer.
 * `--model.conversion_params.tf2up_strategy` learned strategy used in DCN paper to learn the imaginary parts
-* `--model.conversion_params.up2tf_strategy` concat strategy is used to stack the real and imageinary parts on the channel dimension.
+* `--model.conversion_params.up2tf_strategy` concat strategy is used to stack the real and imaginary parts on the channel dimension.
 
 __Training and evaluation on CIFAR100__:
 
@@ -146,7 +146,7 @@ The only change required in the above configuration is `--dataloader.name cifar1
 
 ### How to modify the code
 
-All our models are availale in `/classification-api/src/models/` directory.
+All our models are available in `/classification-api/src/models/` directory.
 
 In order to add custom models. We only require to subclass `GenericModelBuilder` and override the `model` function.
 
@@ -166,24 +166,24 @@ class AnExampleNetwork(GenericModelBuilder)
 # ...
   def model(self, x):
     
-    # model Input (handeled from generic_model.py file)
+    # model Input (handled from generic_model.py file)
 
     # TF2Upstride done automatically (provided user has given model.changing_ids beginning)
 
     # user specific layers 
     self.layer.Conv2D(64 // self.factor)(x)
 
-    # its possible to switch intermediate layers from hypercomplex to real and vice versa. refer to change_framework_if_necessary function. 
+    # it's possible to switch intermediate layers from hypercomplex to real and vice versa. Refer to change_framework_if_necessary function. 
     # ...
     # ... 
     
-    # User should not define the logits layers within the model. This will be handeled by generic_model.py file. refer def build
+    # User should not define the logits layers within the model. This will be handled by generic_model.py file. refer def build
 
     # Upstride2TF done automatically (provided user has given model.changing_ids end_before_dense or end_after_dense)
 
 ```
 
-Once the model is well defined and saved (eg example_model.py in `models` directory). Now the user would have to add the model class name `AnExampleNetwork` to the `__init__.py` file in the `classification/src/models` directory.
+Once the model is well defined and saved (e.g. example_model.py in `models` directory), the user would need to add the model class name `AnExampleNetwork` to the `__init__.py` file in the `classification/src/models` directory.
 
 ```python
 from .example_model import AnExampleNetwork
@@ -198,16 +198,16 @@ model_name_to_class = {
 }
 ```
 
-Now in order to start the training we only need to replace the `--model.name examplenetwork`. Switching between upstride types can be done via `--model.upstride_type` argument. 
+Now in order to start the training we only need to replace the `--model.name examplenetwork`. Switching between upstride types can be achieved via `--model.upstride_type` argument. 
 
 * -1 or 0 - Tensorflow
 * 1 - Type 1
 * 2 - Type 2
 * 3 - Type 3
 
-It's recommended the user goes through the `generic_model.py` in detail on how to use other keyword arguments.
+It's recommended that the user parses `generic_model.py` in detail on how to use other keyword arguments.
 
-In `train.py` file at the root of the `classification_api` folder, there are namespaces for arguments which would be useful in understanding the default values.
+In `train.py` file at the root of the `classification_api` folder, there are namespaces for arguments which are useful in understanding the default values.
 
 ## References
 

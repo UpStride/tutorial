@@ -22,17 +22,17 @@ If you wish to install the required packages directly on you machine, follow *me
 
 Local installation should hopefully go well, but it is possible that some problems with e.g. Nvidia libraries will emerge - the engine uses TensorFlow 2.4, which has specific Nvidia dependencies. That is why we also provide the docker approach, which should work regardless of the local configuration and libraries installed in the system.
 
-**Method 1 - local**
+### Method 1 (local)
 
 > pip install -r requirements.txt
 
 The packages will be installed locally.
 
-**Method 2 - docker**
+### Method 2 (docker)
 
 Use dockerfile to build and run the image without installing the dependencies on the local system.
 
-__Build the docker file__
+#### Build the docker file
 
 Let's prepare the environment by building the docker. We use the `makefile` to build and run the dockers
 
@@ -41,14 +41,14 @@ From the root of this directory type in the shell:
 
 You would see the initial docker image being pulled from registry and dependencies being installed to construct a new docker image.
 
-__Launch the docker__
+#### Launch the docker
 
 From the shell run the below command:
 > make run
 
 The docker would be launched and you should see the docker terminal in the same window. Note: You will be logged in as root.
 
-__Docker environment introduction__
+#### Docker environment introduction
 
 This section serves as an introduction to docker manipulation, especially if some changes have to be introduced.
 
@@ -92,7 +92,7 @@ To check all the docker containers in the system run:
 
 Refer to the [docker documentation](https://docs.docker.com/engine/reference/commandline/run/#options) for further information.
 
-### Upstride engine
+## Upstride engine
 
 To run the tutorials, it's necessary to clone the upstride engine.
 

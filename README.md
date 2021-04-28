@@ -19,6 +19,7 @@ This repository contains three tutorials that use the upstride engine.
 Before diving into the examples, let's set up the environment!
 
 If you wish to install the required packages directly on you machine, follow *method 1*. If instead you wish to work in a docker container, use *method 2*.
+
 Local installation should hopefully go well, but it is possible that some problems with e.g. Nvidia libraries will emerge - the engine uses TensorFlow 2.4, which has specific Nvidia dependencies. That is why we also provide the docker approach, which should work regardless of the local configuration and libraries installed in the system.
 
 **Method 1 - local**
@@ -72,6 +73,7 @@ In the `run` command we use the following arguments:
 + `-v <local_path>:<docker_path>` : mounts a local path in the docker container, this flag can be used multiple times. It can be used e.g. to mount datasets or other repositories.
 
 Other useful flags:
+
 + `--rm` : it removes the docker container after it is exited from, otherwise docker containers are not destroyed and still take drive memory
 + `--name <name>` : docker container will be named accordingly
 
@@ -92,7 +94,9 @@ Refer to the [docker documentation](https://docs.docker.com/engine/reference/com
 
 ### Upstride engine
 
-To run the tutorials, it's necessary to clone the upstride engine. If dockers are to be used, we recommend cloning into this tutorials directory - this way the makefile will not have to be altered in order to include the engine code in the docker container. Alternatively, the engine code located under a different local path can be mounted in the docker using the `-v` argument in the `makefile`. Note: for the deep-complex-network example, a similar procedure is needed for classification-api code.
+To run the tutorials, it's necessary to clone the upstride engine.
+
+If dockers are to be used, we recommend cloning the engine into this tutorials directory - this way the makefile will not have to be altered in order to include the engine code in the docker container. Alternatively, the engine code located under a different local path can be mounted in the docker using the `-v` argument in the `makefile`. Note: for the deep-complex-network example, the same applies to  classification-api code: it needs to either be cloned into this directory or mounted using the `-v` argument.
 
 To use the engine `PYTHONPATH=<local_path_with_upstride_engine>` needs to be appended before running the training scripts, e.g. `PYTHONPATH=/opt/upstride_engine python train.py`. This is required so that you can correctly import upstride modules.
 

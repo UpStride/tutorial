@@ -11,11 +11,11 @@ This is a basic example on how to train a simple convolutional neural network (C
   - [Usage](#usage)
 # Description
 
-In this example, we show how to train and evaluate a simple CNN on the CIFAR-10 dataset. The network is composed of two convolutional layers followed by max pooling and two fully connected layers. The goal is to show how it is possible to create a NN that use different underlying algebras using the upstride engine. Before proceeding with this example, we recommend reading the documentation of the upstride engine.
+In this example, we show how to train and evaluate a simple CNN on the CIFAR-10 dataset. The network is composed of two convolutional layers followed by max pooling and two fully connected layers. The goal is to show how it is possible to create a NN that uses different underlying algebras using the upstride engine. Before proceeding with this example, we recommend reading the documentation of the upstride engine.
 
 ## Pre-requisites
 
-User should have installed the necessary dependencies mentioned in the [README.md](../README.md).
+The user is expected to have installed the necessary dependencies mentioned in the [README.md](../README.md).
 
 ## Example
 
@@ -32,17 +32,17 @@ python train.py \
     --lr 0.001
 ```
 
-For a description of all the available arguments, run `python train.py -h` .
+For a description of all the available arguments, run `python train.py -h`.
 
 ## Usage
 
 The upstride engine provides layers that allow you to define networks that work with:
 
-* real numbers (type0) - used for compatibility of models with layers like TF2Upstride and Upstride2TF with real number networks
-* complex numbers (type1)
-* quaternions (type2)
+* real numbers (`type0`) - used for compatibility of models with layers like `TF2Upstride` and `Upstride2TF` with real valued networks
+* complex numbers (`type1`)
+* quaternions (`type2`)
 
-The upstride engine re-implementes the main tensorflow layers for each of the three types described above. To use the layers of each type, simply import them as:
+The upstride engine re-implements the main TensorFlow layers for each of the three types described above. To use the layers of each type, simply import them as:
 
 ```python
 # type 0
@@ -53,7 +53,7 @@ from upstride.type1.tf.keras import layers
 from upstride.type2.tf.keras import layers
 ```
 
-The upstride layers maintain the original tensorflow/keras API, making it very straightforward to use. Let's have a look at the network definition:
+The upstride layers maintain the original TensorFlow/Keras API, making it straightforward to use. Let's have a look at the network definition:
 
 ```python
 def simpleNet(input_size: List[int], factor: int, num_classes: int) -> tf.keras.Model:
@@ -94,9 +94,9 @@ def simpleNet(input_size: List[int], factor: int, num_classes: int) -> tf.keras.
     return model
 ```
 
-We can see that the code looks almost identical to a standard network definition in tensorflow, except from:
+We can see that the code looks almost identical to a standard network definition in TensorFlow, except from:
 
 - `layers.TF2Upstride`, used to convert the input tensor to the chosen `upstride_type`, and
-- `layers.Upstride2TF`, used to convert back to the standard tensorflow tensor.
+- `layers.Upstride2TF`, used to convert back to the standard TensorFlow tensor.
 
 For example, if we want to define a complex-valued NN, we can pass the argument `--upstride_type 1`. The `TF2Upstride` layer will then convert the real-valued tensors in input to complex-valued tensors, and `Upstride2TF` will convert the complex-valued tensors back to real-valued tensors for the output. The upstride engine supports different strategies for both `TF2Upstride` and `Upstride2TF`. Please refer to the engine documentation for the descriptions of these strategies.

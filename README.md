@@ -63,7 +63,7 @@ A docker container will be launched and you should see the docker terminal in th
 
 This section serves as an introduction for working with dockers, it is helpful especially when some changes to the dockers' configuration are necessary.
 
-`dockerfile` is a file that contains the configuration of the docker, with the required dependencies to be installed. We include the same packages as in `requirements.txt`, which are necessary to run the simple-network and quaternion-transofmers examples. Note: there are some further requirements for the deep-complex-networks example, handled in the classification-api repository.
+`dockerfile` is a file that contains the configuration of the docker, with the required dependencies to be installed. We include the same packages as in `requirements.txt`, which are necessary to run the simple-network and quaternion-transformers examples. Note: there are some further requirements for the deep-complex-networks example, handled in the classification-api repository.
 
 In the `build` command we construct the docker image from `dockerfile` and tag it as `upstride/tutorials:1.0`.
 
@@ -114,7 +114,7 @@ To run the tutorials, it's necessary to clone the upstride engine.
 
 If dockers are to be used, we recommend cloning the engine into this tutorials directory - this way the engine code will be available in the docker container with no alterations to the `makefile`. Alternatively, the engine code located under a different local path can be mounted in the docker using the `-v` argument in the `makefile`. Note: for the deep-complex-network example, the same applies to  classification-api code: it needs to either be cloned into this directory or mounted using the `-v` argument.
 
-To use the engine `PYTHONPATH=<local_path_to_upstride_engine>` needs to be appended before running the training scripts, e.g. `PYTHONPATH=/opt/upstride_engine python train.py`. This is required so that you can correctly import upstride modules.
+To use the engine `PYTHONPATH=<local_path_to_upstride_engine>` needs to be prepended before running the training scripts, e.g. `PYTHONPATH=/opt/upstride_engine python train.py`. This is required so that you can correctly import upstride modules.
 
 Note: You can also set the `PYTHONPATH` to the <local_path_to_upstride_engine> by typing the line below in terminal:
 ```bash
@@ -122,7 +122,7 @@ export PYTHONPATH=<local_path_to_upstride_engine>
 ```
 You only need to do this once per terminal session.
 
-Alternatively, you could perform `pip install -e .` from the root of the upstride_python directory which would install the upstride engine in the users' python environment. Upstride modules will then be automatically picked up without having to specify `PYTHONPATH`.
+Alternatively, you could perform `pip install -e .` from the root of the upstride engine directory which would install the upstride engine in the users' python environment. Upstride modules will then be automatically picked up without having to specify `PYTHONPATH`.
 
 ## Usage
 

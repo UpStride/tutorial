@@ -2,54 +2,6 @@ import tensorflow as tf
 import numpy as np
 
 
-def hamilton_product(q1, q2):
-    """Return the Hamilton product of two quaternions
-
-    Naive implementation of the Hamilton product. This function will be removed
-    once the UpStride Python Engine is ready and we can directly import the
-    multi-head attention layer from there.
-
-    Args:
-        q1 (tensor): quaternion-valued tensor of w/ the components stacked on
-            axis=0 w/ shape=(x, y, Q1, k)
-        q2 (tensor): quaternion-valued tensor of w/ the components stacked on
-            axis=0 w/ shape=(x, y, Q2, k)
-
-    Returns:
-        (tensor): shape=(x, y, Q1, Q2)
-
-    """
-
-    q1 = tf.split(q1, 4, axis=0)
-    q2 = tf.split(q2, 4, axis=0)
-
-    res = []
-    # r component of the product
-    res.append(tf.matmul(q1[0], q2[0], transpose_b=True) -
-               tf.matmul(q1[1], q2[1], transpose_b=True) -
-               tf.matmul(q1[2], q2[2], transpose_b=True) -
-               tf.matmul(q1[3], q2[3], transpose_b=True))
-    # i component of the product
-    res.append(tf.matmul(q1[0], q2[1], transpose_b=True) +
-               tf.matmul(q1[1], q2[0], transpose_b=True) +
-               tf.matmul(q1[2], q2[3], transpose_b=True) -
-               tf.matmul(q1[3], q2[2], transpose_b=True))
-
-    # j component of the product
-    res.append(tf.matmul(q1[0], q2[2], transpose_b=True) -
-               tf.matmul(q1[1], q2[3], transpose_b=True) +
-               tf.matmul(q1[2], q2[0], transpose_b=True) +
-               tf.matmul(q1[3], q2[1], transpose_b=True))
-
-    # k component of the product
-    res.append(tf.matmul(q1[0], q2[3], transpose_b=True) +
-               tf.matmul(q1[1], q2[2], transpose_b=True) -
-               tf.matmul(q1[2], q2[1], transpose_b=True) +
-               tf.matmul(q1[3], q2[0], transpose_b=True))
-
-    return tf.concat(res, axis=0)
-
-
 def real_to_quaternion(x):
     """Return reshaped tensor to simulate a quaternion from a real tensor
 

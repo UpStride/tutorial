@@ -2,8 +2,9 @@ import tensorflow as tf
 import numpy as np
 import upstride.type2.tf.keras.layers as us_layers
 
-from networks.utils import positional_encoding, hamilton_product, \
+from networks.utils import positional_encoding, \
                            real_to_quaternion, quaternion_to_real
+
 
 class MultiHeadAttention(tf.keras.layers.Layer):
     """Keras layer implementing the multi-head attention operation
@@ -40,6 +41,8 @@ class MultiHeadAttention(tf.keras.layers.Layer):
         self.wv = type_layers.Dense(d_model)
 
         self.dense = type_layers.Dense(d_model)
+
+        self.geom_matrix_multiplication = us_layers.GeometricMatrixMultiply()
 
     def split_heads(self, x, batch_size):
         """Separate (d_model) dimension into (num_heads, depth)
@@ -79,11 +82,12 @@ class MultiHeadAttention(tf.keras.layers.Layer):
                 shape == (batch_size, num_heads, seq_len_q, seq_len_k)
         """
 
-        assert type(is_quaternion)== bool
+        assert type(is_quaternion) == bool
 
         # shape = (..., seq_len_q, seq_len_k)
         if is_quaternion:
-            matmul_qk = hamilton_product(q, k)
+            k_t = tf.transpose(k, perm = [0, 1, 3, 2])
+            matmul_qk = self.geom_matrix_multiplication((q, k_t))
         else:
             matmul_qk = tf.matmul(q, k, transpose_b=True)
 
